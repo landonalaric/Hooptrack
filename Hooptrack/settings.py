@@ -26,6 +26,10 @@ SECRET_KEY = 'django-insecure-dk#$q%xk56wb62ta8jb$cgwj(b8-tauu9$r-fdusy7y@ue_6_5
 DEBUG = True
 
 ALLOWED_HOSTS = []
+CORS_ALLOWED_ORIGINS=[
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
 AUTH_USER_MODEL = 'accounts.User'
 
 

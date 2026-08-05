@@ -4,27 +4,33 @@ from players.models import Player
 
 
 class Payment(models.Model):
-    METHOD_CHOICES = [
-        ('MPESA', 'M-Pesa'),
-        ('PAYPAL', 'PayPal'),
-        ('VISA', 'Visa card'),
-        ('MASTERCARD', 'MasterCard'),
-        ('KCB', 'KCB bank transfer'),
-        ('COOP_BANK', 'Co-operative Bank transfer'),
-    ]
-    STATUS_CHOICES = [
-        ('PENDING', 'Pending'),
-        ('COMPLETED', 'Completed'),
-        ('FAILED', 'Failed'),
-    ]
-
-    guardian = models.ForeignKey(GuardianProfile, on_delete=models.CASCADE, related_name='card_payments')
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='card_payments')
+    guardian = models.ForeignKey(GuardianProfile, on_delete=models.CASCADE, related_name='payments')
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = models.CharField(max_length=20, choices=METHOD_CHOICES, default='MPESA')
-    receipt_no = models.CharField(max_length=100, unique=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    payment_method = models.CharField(
+        max_length=20,
+        choices=[
+            ('MPESA', 'M-Pesa'),
+            ('PAYPAL', 'PayPal'),
+            ('VISA', 'Visa card'),
+            ('MASTERCARD', 'MasterCard'),
+            ('KCB', 'KCB bank transfer'),
+            ('COOP_BANK', 'Co-operative Bank transfer'),
+        ],
+        default='MPESA'
+    )
     date = models.DateTimeField(auto_now_add=True)
+    receipt_no = models.CharField(max_length=100, unique=True)
+    verified_by_admin = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('PENDING', 'Pending'),
+            ('COMPLETED', 'Completed'),
+            ('FAILED', 'Failed'),
+        ],
+        default='PENDING'
+    )
 
     def __str__(self):
-        return f"{self.payment_method} payment of {self.amount} by {self.guardian.fullname} ({self.status})"
+        return f"Payment of {self.amount} by {self.guardian.fullname} for {self.player.fullname}"

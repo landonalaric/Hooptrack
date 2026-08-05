@@ -1,9 +1,7 @@
 from rest_framework import generics, permissions, exceptions
 
-from Fees.serializer import PaymentSerializer
-
-
 from .models import Payment
+from .serializer import PaymentSerializer, PaymentStatusUpdateSerializer
 
 from accounts.models import Role, GuardianProfile
 from players.models import Player
@@ -33,7 +31,7 @@ class GuardianPaymentView(generics.ListCreateAPIView):
 
         if user.role != Role.GUARDIAN:
             raise exceptions.PermissionDenied(
-                "Only guardians can submit payment receipts."
+                "Only guardians can submit payments."
             )
 
         try:
@@ -49,5 +47,21 @@ class GuardianPaymentView(generics.ListCreateAPIView):
 
         serializer.save(
             guardian=profile,
-            player=player
+            player=player,
+            status='PENDING'
         )
+
+
+class AdminPaymentStatusView(generics.RetrieveUpdateAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentStatusUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['get', 'patch']
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role != Role.ADMIN:
+            raise exceptions.PermissionDenied(
+                "Only admins can update payment status."
+            )
+        return Payment.objects.filter(player__academy=user.academy)

@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from Attendance.views import AttendanceViewSet
 
 from Fitness.views import FitnessLogViewSet
-from Fees.views import GuardianPaymentView
+from Fees.views import AdminPaymentStatusView, GuardianPaymentView
 from Schedule.views import ScheduleViewSet
 from Teams.views import TeamViewSet
 from academy.views import AcademyViewSet
@@ -14,6 +14,7 @@ from scouting.views import ScoutReportViewSet
 from communications.views import AnnouncementViewSet
 from chat.views import ChatMessageView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
 
 router = DefaultRouter()
 router.register(r'academies', AcademyViewSet, basename='academy')
@@ -32,5 +33,8 @@ urlpatterns = [
     path ('api/docs', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/fees/', GuardianPaymentView.as_view(), name='payments'),
     path('api/chat/', ChatMessageView.as_view(), name='chat-room'),
+    path('api/payments/', GuardianPaymentView.as_view(), name='payments-list'),
+    path('api/payments/<int:pk>/status/', AdminPaymentStatusView.as_view(), name='payment-status-update'),
 ]
+
 

@@ -4,4 +4,5 @@ from .models import Announcement
 class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
-        fields = '__all__'
+        fields = ["id", "title", "content", "date_sent", "academy", "sender"]
+        read_only_fields = ["academy", "sender", "date_sent"]

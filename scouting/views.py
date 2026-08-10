@@ -18,32 +18,39 @@ class ScoutReportViewSet(viewsets.ModelViewSet):
 
 def perform_create(self, serializer):
     print("=== CREATE ATTEMPT ===")
-    print("User:", self.request.user, "Role:", getattr(self.request.user, "role", None))
 
-    if self.request.user.role != Role.SCOUT:
+    user = self.request.user
+
+    print("User:", user)
+    print("User ID:", user.id)
+    print("Role:", getattr(user, "role", None))
+
+    if user.role != Role.SCOUT:
         print("BLOCKED: not a scout")
-        raise exceptions.PermissionDenied("Only scouts can log candidate reports.")
+        raise exceptions.PermissionDenied(
+            "Only scouts can log candidate reports."
+        )
+
     try:
-        profile = ScoutProfile.objects.get(user=self.request.user)
-        print("Scout profile found:", profile, "Academy:", getattr(profile, "academy", "NO ACADEMY FIELD"))
+        profile = ScoutProfile.objects.get(user=user)
+
+        print("Scout profile:", profile)
+        print("Scout profile ID:", profile.id)
+        print("Academy:", profile.academy)
+        print("Academy ID:", profile.academy.id)
+
     except ScoutProfile.DoesNotExist:
         print("BLOCKED: no scout profile")
-        raise exceptions.ValidationError("Scout profile needs database setup.")
 
-    instance = serializer.save(scout=profile, academy=profile.academy)
-    print("SAVED REPORT:", instance.id, instance.player_name)
+        raise exceptions.ValidationError(
+            "Scout profile does not exist for this user."
+        )
 
-def get_queryset(self):
-    user = self.request.user
-    print("=== LIST REQUEST ===")
-    print("User:", user, "Role:", getattr(user, "role", None))
-    if user.role == Role.SCOUT:
-        qs = ScoutReport.objects.filter(scout__user=user)
-        print("Scout queryset count:", qs.count(), "IDs:", list(qs.values_list("id", flat=True)))
-        return qs
-    elif user.role in [Role.ADMIN, Role.COACH]:
-        qs = ScoutReport.objects.filter(academy=user.academy)
-        print("Admin/coach queryset count:", qs.count())
-        return qs
-    print("No matching role, returning none()")
-    return ScoutReport.objects.none()
+    instance = serializer.save(
+        scout=profile,
+        academy=profile.academy
+    )
+
+    print("SAVED REPORT:", instance.id)
+    print("SCOUT:", instance.scout_id)
+    print("ACADEMY:", instance.academy_id)

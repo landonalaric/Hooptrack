@@ -26,6 +26,7 @@ def perform_create(self, serializer):
     print("ROLE:", user.role)
 
     if user.role != Role.SCOUT:
+        print("BLOCKED: USER IS NOT A SCOUT")
         raise exceptions.PermissionDenied(
             "Only scouts can log candidate reports."
         )
@@ -33,20 +34,29 @@ def perform_create(self, serializer):
     try:
         profile = ScoutProfile.objects.get(user=user)
     except ScoutProfile.DoesNotExist:
+        print("BLOCKED: SCOUT PROFILE NOT FOUND")
         raise exceptions.ValidationError(
-            "No ScoutProfile exists for this user."
+            "Scout profile does not exist for this user."
         )
 
     print("SCOUT PROFILE:", profile)
-    print("SCOUT PROFILE ID:", profile.id)
+    print("SCOUT PROFILE ID:", profile.pk)
+
+    if not profile.academy:
+        print("BLOCKED: SCOUT HAS NO ACADEMY")
+        raise exceptions.ValidationError(
+            "Scout profile is not assigned to an academy."
+        )
+
     print("ACADEMY:", profile.academy)
-    print("ACADEMY ID:", profile.academy_id)
+    print("ACADEMY ID:", profile.academy.pk)
 
     instance = serializer.save(
         scout=profile,
         academy=profile.academy
     )
 
-    print("REPORT SAVED:", instance.id)
+    print("=== REPORT SAVED ===")
+    print("REPORT ID:", instance.pk)
     print("SCOUT ID:", instance.scout_id)
     print("ACADEMY ID:", instance.academy_id)

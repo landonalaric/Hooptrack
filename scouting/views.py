@@ -23,5 +23,5 @@ class ScoutReportViewSet(viewsets.ModelViewSet):
             profile = ScoutProfile.objects.get(user=self.request.user)
         except ScoutProfile.DoesNotExist:
             raise exceptions.ValidationError("Scout profile needs database setup.")
-        
-        serializer.save(scout=profile)
+
+        serializer.save(scout=profile, academy=profile.academy)

@@ -24,4 +24,7 @@ class ScoutReportViewSet(viewsets.ModelViewSet):
         except ScoutProfile.DoesNotExist:
             raise exceptions.ValidationError("Scout profile needs database setup.")
 
+        if not profile.academy_id:
+            raise exceptions.ValidationError("Scout profile has no academy assigned.")
+
         serializer.save(scout=profile, academy=profile.academy)

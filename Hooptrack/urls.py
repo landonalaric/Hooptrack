@@ -12,8 +12,9 @@ from academy.views import AcademyViewSet
 from players.views import PlayerViewSet
 from scouting.views import ScoutReportViewSet
 from communications.views import AnnouncementViewSet
-from chat.views import ChatMessageView
+
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from chat.views import ChatContactsView, ChatMessageView
 
 
 router = DefaultRouter()
@@ -29,10 +30,11 @@ router.register(r'announcements', AnnouncementViewSet, basename='announcement')
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/accounts/', include('accounts.urls')),
-    path ('api/schema', SpectacularAPIView.as_view(), name='schema'),
-    path ('api/docs', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/fees/', GuardianPaymentView.as_view(), name='payments'),
-    path('api/chat/', ChatMessageView.as_view(), name='chat-room'),
+    path('api/chat-messages/', ChatMessageView.as_view(), name='chat-messages'),
+    path('api/chat-contacts/', ChatContactsView.as_view(), name='chat-contacts'),
     path('api/payments/', GuardianPaymentView.as_view(), name='payments-list'),
     path('api/payments/<int:pk>/status/', AdminPaymentStatusView.as_view(), name='payment-status-update'),
 ]

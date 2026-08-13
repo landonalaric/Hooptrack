@@ -95,10 +95,10 @@ WSGI_APPLICATION = 'Hooptrack.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hooptrack',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'NAME': 'landonalaric_hooptrack',
+        'USER': 'landonalaric',
+        'PASSWORD': 'Trinity_198507',
+        'HOST': 'mysql-landonalaric.alwaysdata.net',
         
     }
 }

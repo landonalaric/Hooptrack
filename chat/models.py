@@ -1,7 +1,7 @@
 from django.db import models
-from django.db import models
 from django.core.exceptions import ValidationError
 from accounts.models import User, Role
+
 
 class ChatMessage(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
@@ -15,7 +15,8 @@ class ChatMessage(models.Model):
             (Role.ADMIN, Role.COACH), (Role.COACH, Role.ADMIN),
             (Role.COACH, Role.GUARDIAN), (Role.GUARDIAN, Role.COACH),
             (Role.ADMIN, Role.SCOUT), (Role.SCOUT, Role.ADMIN),
-            (Role.SCOUT, Role.COACH), (Role.COACH, Role.SCOUT)
+            (Role.SCOUT, Role.COACH), (Role.COACH, Role.SCOUT),
+            (Role.SUPERADMIN, Role.ADMIN), (Role.ADMIN, Role.SUPERADMIN),
         ]
         if (s_role, r_role) not in allowed_pairs:
             raise ValidationError(f"Direct messaging is blocked between roles: {s_role} and {r_role}")

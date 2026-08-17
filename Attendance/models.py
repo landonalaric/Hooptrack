@@ -1,4 +1,4 @@
-from django.db import models
+
 from django.db import models
 from Schedule.models import Schedule
 from players.models import Player

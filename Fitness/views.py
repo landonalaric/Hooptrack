@@ -16,7 +16,7 @@ class FitnessLogViewSet(viewsets.ModelViewSet):
         if user.role == Role.SUPERADMIN:
             return FitnessLog.objects.all()
 
-        elif user.role == Role.GUARDIAN:
+        if user.role == Role.GUARDIAN:
             try:
                 profile = GuardianProfile.objects.get(
                     user=user
